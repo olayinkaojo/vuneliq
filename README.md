@@ -24,7 +24,7 @@ Open http://localhost:3000. The app detects the server automatically. Visitors s
 
 Provision optional accounts at startup with `FINANCE_EMAIL`/`FINANCE_PASSWORD`, `PROJECT_EMAIL`/`PROJECT_PASSWORD`, and `DONOR_EMAIL`/`DONOR_PASSWORD`. The sample donor account is linked to the fictional Ada Okafor. Existing account credentials are not overwritten at startup. Provisioning is deliberately server-side; do not put these variables in frontend/VITE variables.
 
-SQLite data persists in `data/vuneliq.sqlite`. Set `DATA_DIR` to a persistent volume when hosting. Back up the database using a SQLite-aware backup process. Set `PORT` if required. Use HTTPS and `NODE_ENV=production` on a deployed server (session cookies then require HTTPS). This server needs a Node host with a persistent disk, not static-only Vercel hosting. Vite's static demo can be hosted separately, but it is not the shared application.
+Without `DATABASE_URL`, SQLite data persists in `data/vuneliq.sqlite`. With `DATABASE_URL`, records, accounts and sessions live in external PostgreSQL (Supabase). Set `DATA_DIR` to a persistent volume when hosting. Back up the database using a SQLite-aware backup process. Set `PORT` if required. Use HTTPS and `NODE_ENV=production` on a deployed server (session cookies then require HTTPS). This server needs a Node host with a persistent disk, not static-only Vercel hosting. Vite's static demo can be hosted separately, but it is not the shared application.
 
 ## Implemented
 
@@ -45,7 +45,7 @@ Not yet implemented: private evidence **file uploads**, a complete void/correcti
 
 Evidence notes are private to staff; public publication exposes the output and method, not the note. Results currently represent dated observations and should not be summed as unique beneficiary counts. Seed data is illustrative, including one result awaiting review; do not treat it as reconciled real project evidence.
 
-The Node server serialises workspace changes in SQLite and rejects stale versions with HTTP 409. Refresh and reapply your change if another team member has saved first. Audit history is server-generated; browser demo history is user-editable and not trustworthy.
+The Node server serialises workspace changes in database transactions and rejects stale versions with HTTP 409. Refresh and reapply your change if another team member has saved first. Audit history is server-generated; browser demo history is user-editable and not trustworthy.
 
 ## Quality checks
 
@@ -66,3 +66,22 @@ Tests cover reconciliation, exclusion of goods values from cash, invalid usage, 
 - `tests/`: business-rule and server integration checks
 
 Team repository: https://github.com/olayinkaojo/vuneliq
+
+## Deploy to Render Free with Supabase
+
+The `render.yaml` Blueprint creates one **free Node web service**, with **no paid disk or Render database**. Supabase PostgreSQL stores records, password hashes and sessions outside Render, so they survive Render restarts. Local SQLite remains available for development. This uses Supabase as a PostgreSQL host; it does not use Supabase Auth.
+
+1. In your intended Supabase project, open **Connect → Session pooler** and copy the PostgreSQL URI. Use the supplied project-specific host/username, port 5432, database password, and TLS. URL-encode special characters in the password. Do not paste the URI in chat or commit it.
+2. In Render choose **New → Blueprint**, select `olayinkaojo/vuneliq` and branch `main`, and use `render.yaml`.
+3. Confirm the service is **Free** and has no paid resources. Enter `DATABASE_URL`, `ADMIN_EMAIL` and a unique `ADMIN_PASSWORD` of at least 12 characters in Render's private environment fields.
+4. Deploy and open the assigned HTTPS URL. `/api/health` should return `{"status":"ok"}` after checking the database. Use **Staff / donor login**.
+5. If TLS reports an unknown certificate authority, obtain the database CA certificate from Supabase and set `DATABASE_CA_CERT` in Render. Certificate verification is never disabled.
+6. Verify a fictional record survives a Render restart. Review accounts and records in the intended project before inviting the team.
+
+The connection needs permission to create the isolated `vuneliq` schema and its `workspace`, `users` and `sessions` tables. They are not in the public API schema, and privileges for PUBLIC are revoked. Use a dedicated project or appropriate server database role. The server initialises fictional seed records only when the workspace is empty; it never overwrites an existing workspace. It does not automatically migrate a previous local SQLite file.
+
+`REQUIRE_DATABASE_URL=true` stops startup if the external database is missing; it never silently falls back to temporary Render storage. The app keeps existing session authentication and role checks. Database updates lock the workspace row inside a PostgreSQL transaction and reject stale versions. This MVP stores the workspace as a versioned JSON document in PostgreSQL; a normalised reporting schema is future work.
+
+Free Render services can sleep and take time to wake. Supabase free projects have their own quotas and availability limits; review these in your dashboard. Private evidence uploads and transaction corrections remain unfinished. The first deployment contains fictional sample records and is for assessment use.
+
+The Blueprint runs Node 24, builds with `npm ci --include=dev && npm run build`, starts with `npm start`, and follows passing checks on `main`. Do not configure multiple service replicas for the assessment deployment.
