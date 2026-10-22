@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://render.com/schema/render.yaml.json
+# Free web service with persistent external Supabase PostgreSQL storage.
+services:
+  - type: web
+    name: vuneliq
+    runtime: node
+    repo: https://github.com/olayinkaojo/vuneliq
+    branch: main
+    region: frankfurt
+    plan: free
+    numInstances: 1
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeployTrigger: checksPass
+    envVars:
+      - key: NODE_VERSION
+        value: 24
+      - key: NODE_ENV
+        value: production
+      - key: REQUIRE_DATABASE_URL
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
