@@ -1,0 +1,5 @@
+import{test}from'node:test';import assert from'node:assert/strict';import{available,campaignBalance,validateAmount,csvCell}from'../src/domain.mjs';
+test('cash receipt, allocation and expenditure reconcile',()=>{const d=[{id:'d',type:'cash',value:10000000}];const a=[{donationId:'d',campaignId:'c',value:7000000}];assert.equal(available(d[0],a),3000000);assert.equal(campaignBalance('c',d,a,[{campaignId:'c',value:2000000}]),5000000)});
+test('goods values never contribute to cash balance',()=>assert.equal(campaignBalance('c',[{id:'g',type:'goods'}],[{donationId:'g',campaignId:'c',value:500}],[]),0));
+test('invalid and excessive usage is rejected',()=>{for(const n of[-1,0,NaN,Infinity])assert.throws(()=>validateAmount(n));assert.throws(()=>validateAmount(51,50));assert.doesNotThrow(()=>validateAmount(50,50))});
+test('CSV neutralises formula injection and escapes quotes',()=>{assert.equal(csvCell('=1+1'),'"\'=1+1"');assert.equal(csvCell('A"B'),'"A""B"');assert.equal(csvCell(' @SUM(1)'),'"\' @SUM(1)"')});

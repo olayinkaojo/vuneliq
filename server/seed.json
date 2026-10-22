@@ -1,0 +1,174 @@
+{
+  "campaigns": [
+    {
+      "id": "c1",
+      "name": "A brighter start",
+      "category": "Education",
+      "description": "Putting books, learning materials and possibility into the hands of children in Abuja.",
+      "target": 150000000,
+      "published": true,
+      "color": "sand"
+    },
+    {
+      "id": "c2",
+      "name": "Meals that matter",
+      "category": "Food security",
+      "description": "Helping families access nutritious food and build a healthier tomorrow.",
+      "target": 200000000,
+      "published": true,
+      "color": "green"
+    },
+    {
+      "id": "c3",
+      "name": "Care within reach",
+      "category": "Health",
+      "description": "Bringing essential health checks and community care closer to home.",
+      "target": 100000000,
+      "published": false,
+      "color": "blue"
+    }
+  ],
+  "donations": [
+    {
+      "id": "d1",
+      "donor": "Ada Okafor",
+      "type": "cash",
+      "value": 85000000,
+      "item": "",
+      "unit": "",
+      "date": "2026-10-20",
+      "reference": "VN-1001"
+    },
+    {
+      "id": "d2",
+      "donor": "Greenfield Foundation",
+      "type": "cash",
+      "value": 120000000,
+      "item": "",
+      "unit": "",
+      "date": "2026-10-19",
+      "reference": "VN-1002"
+    },
+    {
+      "id": "d3",
+      "donor": "Olu Martins",
+      "type": "goods",
+      "value": 150,
+      "item": "School books",
+      "unit": "books",
+      "date": "2026-10-18",
+      "reference": "VN-1003"
+    },
+    {
+      "id": "d4",
+      "donor": "Anonymous",
+      "type": "cash",
+      "value": 35000000,
+      "item": "",
+      "unit": "",
+      "date": "2026-10-17",
+      "reference": "VN-1004"
+    },
+    {
+      "id": "d5",
+      "donor": "Hope Collective",
+      "type": "goods",
+      "value": 80,
+      "item": "Food packs",
+      "unit": "packs",
+      "date": "2026-10-16",
+      "reference": "VN-1005"
+    }
+  ],
+  "allocations": [
+    {
+      "id": "a1",
+      "donationId": "d1",
+      "campaignId": "c1",
+      "value": 65000000
+    },
+    {
+      "id": "a2",
+      "donationId": "d2",
+      "campaignId": "c2",
+      "value": 100000000
+    },
+    {
+      "id": "a3",
+      "donationId": "d3",
+      "campaignId": "c1",
+      "value": 120
+    },
+    {
+      "id": "a4",
+      "donationId": "d4",
+      "campaignId": "c1",
+      "value": 20000000
+    },
+    {
+      "id": "a5",
+      "donationId": "d5",
+      "campaignId": "c2",
+      "value": 70
+    }
+  ],
+  "expenses": [
+    {
+      "id": "e1",
+      "campaignId": "c1",
+      "value": 30000000,
+      "purpose": "Learning materials and school supplies",
+      "date": "2026-10-21"
+    },
+    {
+      "id": "e2",
+      "campaignId": "c2",
+      "value": 45000000,
+      "purpose": "Community food support",
+      "date": "2026-10-20"
+    }
+  ],
+  "distributions": [
+    {
+      "id": "x1",
+      "allocationId": "a3",
+      "value": 85,
+      "destination": "Community primary school",
+      "date": "2026-10-21"
+    }
+  ],
+  "results": [
+    {
+      "id": "r1",
+      "campaignId": "c1",
+      "name": "Books distributed",
+      "target": 150,
+      "actual": 85,
+      "unit": "books",
+      "method": "Signed school distribution register",
+      "evidence": "Register reviewed by project officer; fictional demo evidence.",
+      "published": true,
+      "date": "2026-10-21"
+    },
+    {
+      "id": "r2",
+      "campaignId": "c2",
+      "name": "Food packs delivered",
+      "target": 100,
+      "actual": 60,
+      "unit": "packs",
+      "method": "Delivery records",
+      "evidence": "Fictional delivery record; pending review.",
+      "published": false,
+      "date": "2026-10-20"
+    }
+  ],
+  "audit": [
+    {
+      "id": "log1",
+      "action": "Published Books distributed result",
+      "date": "2026-10-21T12:00:00Z",
+      "actor": "Administrator"
+    }
+  ]
+}
